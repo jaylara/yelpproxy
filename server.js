@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 //route variables
 // define a root route:
 app.get('/', (req, res) => {
-	res.send('user /api');
+	res.send('user /yelp');
 });
 
 
@@ -27,7 +27,7 @@ app.get('/yelp',(req, res) => {
 const client = yelp.client(token);
 
 client.business('gary-danko-san-francisco').then(response => {
-  		console.log(response.jsonBody.name);
+  		res.json(response.jsonBody);
 		}).catch(e => {
   		console.log(e);
 		});
