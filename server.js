@@ -16,21 +16,27 @@ app.get('/', (req, res) => {
 	res.send('user /yelp');
 });
 
+const yelpClientPromise = yelp.accessToken(process.env.CLIENT_ID, process.env.CLIENT_SECRET)
+.then(response => {
+	console.log(response.jsonBody.access_token);
+	return yelp.client(response.jsonBody.access_token);
+}).catch(e => {
+	console.log(e);
+});
 
 app.get('/yelp',(req, res) => {
-	const token = yelp.accessToken(process.env.CLIENT_ID, process.env.CLIENT_SECRET).then(response => {
-  								console.log(response.jsonBody.access_token);
-								}).catch(e => {
-  								console.log(e);
-								});
+	yelpClientPromise.then(client => {
+		//do stuff with `yelp`
+		client.business('gary-danko-san-francisco').then(response => {
+		  		res.json(response.jsonBody);
+				}).catch(e => {
+		  		res.json(e);
+				});
+	}).catch(err => {
+		res.status(500).send('Could not get Yelp client');
+	});
 
-const client = yelp.client(token);
 
-client.business('gary-danko-san-francisco').then(response => {
-  		res.json(response.jsonBody);
-		}).catch(e => {
-  		console.log(e);
-		});
 	// let url = 'https://api.yelp.com/v2';
   //     axios.get(url,{
   //       //params
