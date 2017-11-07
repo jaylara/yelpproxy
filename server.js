@@ -7,7 +7,16 @@ require('dotenv').config();
 // app config
 //const app = express();
 const port = process.env.PORT || 3000;
+
 app.use(bodyParser.json());
+
+app.all("/*", function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With");
+    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+    return next();
+});
+
 
 //executes handling of a promise. responds with successful data output
 // or error message in json
@@ -21,7 +30,7 @@ var handleClientAction = (res, promise) => {
 
 // define a root route:
 app.get('/', (req, res) => {
-	res.send('Try /search, /');
+	res.send('Try /search, /phone');
 });
 
 //get access token using a promise
@@ -65,7 +74,6 @@ app.get('/reviews',(req, res) => {
 	});
 });//end of GET/reviews route
 
-
 //autocomplete search. handles query strings.
 //simplest query requires value for [text] value (ex: pizza).
 app.get('/autocomplete',(req, res) => {
@@ -75,9 +83,6 @@ app.get('/autocomplete',(req, res) => {
 		res.status(500).send('Could not get Yelp client');
 	});
 });//end of GET/reviews route
-
-
-
 
 // start app
 app.listen(port, function(err) {
